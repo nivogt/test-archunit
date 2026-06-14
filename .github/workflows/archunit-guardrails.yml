@@ -52,3 +52,4 @@ jobs:
         files: '**/test-results.trx'
         check_name: Test Results
         comment_mode: always
+        github_token: ${{ secrets.GITHUB_TOKEN }}
