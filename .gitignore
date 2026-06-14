@@ -1,0 +1,53 @@
+# Ignore build results
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Build results
+*.dll
+*.exe
+*.pdb
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual Studio cache/options
+.vs/
+
+# Rider cache/options
+.idea/
+*.sln.iml
+
+# Test Results
+*.trx
+TestResults/
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+
+# Build output
+dist/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Visual Studio Code
+.vscode/
+.vscode/launch.json
+.vscode/settings.json
+
+# Local environment files
+.env
+.env.local
+
+# Node modules (for potential JS tooling)
+node_modules/
