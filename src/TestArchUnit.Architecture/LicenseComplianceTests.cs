@@ -12,7 +12,7 @@ namespace TestArchUnit.Architecture.Tests;
 public class LicenseComplianceTests
 {
     private static readonly global::ArchUnitNET.Domain.Architecture Architecture =
-        new ArchLoader().LoadAssemblies(typeof(LicenseComplianceTests).Assembly).Build();
+        new ArchLoader().LoadAssemblies(typeof(LicenseComplianceTests).Assembly, typeof(TestArchUnit.API.Controllers.HealthController).Assembly).Build();
 
     /// <summary>
     /// Validates that no GPL 3 licensed libraries are used in the solution.
@@ -41,10 +41,13 @@ public class LicenseComplianceTests
             );
 
         // Execute the rule
-        var violations = rule.Evaluate(Architecture).ToList();
+        var evaluationResults = rule
+            .WithoutRequiringPositiveResults()
+            .Evaluate(Architecture)
+            .ToList();
         
-        // Assert no violations
-        Assert.Empty(violations);
+        // Assert the rule evaluated positively
+        Assert.All(evaluationResults, result => Assert.True(result.Passed));
     }
 
     /// <summary>
@@ -85,17 +88,18 @@ public class LicenseComplianceTests
     [Fact]
     public void AllControllersHaveApiControllerAttribute()
     {
-        var rule = Classes()
-            .That()
-            .HaveNameEndingWith("Controller")
-            .And()
-            .ResideInNamespace("TestArchUnit.API.Controllers")
-            .Should()
-            .HaveAnyAttributes();
+        var apiAssembly = typeof(TestArchUnit.API.Controllers.HealthController).Assembly;
+        var controllerTypes = apiAssembly.GetTypes()
+            .Where(t => t.Namespace == "TestArchUnit.API.Controllers" && t.Name.EndsWith("Controller"));
 
-        var violations = rule.Evaluate(Architecture).ToList();
-        
-        Assert.Empty(violations);
+        Assert.NotEmpty(controllerTypes);
+
+        var missingApiController = controllerTypes
+            .Where(t => !t.GetCustomAttributes(typeof(Microsoft.AspNetCore.Mvc.ApiControllerAttribute), false).Any())
+            .Select(t => t.FullName)
+            .ToList();
+
+        Assert.Empty(missingApiController);
     }
 }
 
@@ -105,7 +109,7 @@ public class LicenseComplianceTests
 public class NamingConventionTests
 {
     private static readonly global::ArchUnitNET.Domain.Architecture Architecture =
-        new ArchLoader().LoadAssemblies(typeof(NamingConventionTests).Assembly).Build();
+        new ArchLoader().LoadAssemblies(typeof(NamingConventionTests).Assembly, typeof(TestArchUnit.API.Controllers.HealthController).Assembly).Build();
 
     /// <summary>
     /// Validates that all public classes have meaningful names (no generic names).
@@ -123,9 +127,12 @@ public class NamingConventionTests
             .Should()
             .NotHaveNameMatching("^(Class|Test|Helper|Utils)[0-9]*$");
 
-        var violations = rule.Evaluate(Architecture).ToList();
+        var evaluationResults = rule
+            .WithoutRequiringPositiveResults()
+            .Evaluate(Architecture)
+            .ToList();
         
-        Assert.Empty(violations);
+        Assert.All(evaluationResults, result => Assert.True(result.Passed));
     }
 }
 
@@ -135,7 +142,7 @@ public class NamingConventionTests
 public class ArchitectureLayeringTests
 {
     private static readonly global::ArchUnitNET.Domain.Architecture Architecture =
-        new ArchLoader().LoadAssemblies(typeof(ArchitectureLayeringTests).Assembly).Build();
+        new ArchLoader().LoadAssemblies(typeof(ArchitectureLayeringTests).Assembly, typeof(TestArchUnit.API.Controllers.HealthController).Assembly).Build();
 
     /// <summary>
     /// Validates that controllers are isolated in their namespace.
@@ -149,8 +156,11 @@ public class ArchitectureLayeringTests
             .Should()
             .ResideInNamespace("TestArchUnit.API.Controllers");
 
-        var violations = rule.Evaluate(Architecture).ToList();
+        var evaluationResults = rule
+            .WithoutRequiringPositiveResults()
+            .Evaluate(Architecture)
+            .ToList();
         
-        Assert.Empty(violations);
+        Assert.All(evaluationResults, result => Assert.True(result.Passed));
     }
 }

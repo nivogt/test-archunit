@@ -1,5 +1,9 @@
 name: Test ArchUnit License Guardrails
 
+permissions:
+  contents: read
+  checks: write
+
 on:
   push:
     branches: [ main, develop ]
