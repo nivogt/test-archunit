@@ -33,7 +33,7 @@ test-archunit/
 ### 1. **REST API Component**
    - **ProductsController**: Full CRUD operations for products (GET, POST, PUT, DELETE)
    - **HealthController**: API health status endpoint
-   - Built with ASP.NET Core 8.0
+   - Built with ASP.NET Core 10.0
    - Includes Swagger/OpenAPI documentation
    - Structured logging with Serilog
 
@@ -67,7 +67,7 @@ The project implements several architectural tests:
 ## 🚀 Getting Started
 
 ### Prerequisites
-- .NET 8.0 SDK or later
+- .NET 10.0 SDK or later
 - Visual Studio, VS Code, or Rider (optional)
 - Git for version control
 
@@ -169,7 +169,7 @@ The project includes an automated CI/CD pipeline (`.github/workflows/archunit-gu
 
 **Pipeline Steps:**
 1. ✅ Checkout code
-2. ✅ Setup .NET 8.0
+2. ✅ Setup .NET 10.0
 3. ✅ Restore dependencies
 4. ✅ Build solution
 5. ✅ **Run Architecture Tests (License Compliance)**
@@ -177,12 +177,21 @@ The project includes an automated CI/CD pipeline (`.github/workflows/archunit-gu
 7. ✅ Upload test results
 8. ✅ Publish test report
 
+**Required Permissions:**
+The workflow requires the following GitHub token permissions:
+- `contents: read` — Access repository code
+- `checks: write` — Create/update check runs
+- `issues: write` — Add comments to issues
+- `pull-requests: write` — Post test result comments on pull requests
+
 **Triggers:**
 - On push to `main` or `develop` branches
 - On pull requests to `main` branch
 
 **Status Checks:**
-Tests must pass before merging to ensure license compliance.
+Tests must pass before merging to ensure license compliance. Test results are posted as:
+- Check runs (visible in PR checks section)
+- Comments on pull requests (when `comment_mode` is enabled)
 
 ### Running Tests in GitHub Actions
 
