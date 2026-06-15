@@ -3,6 +3,7 @@ name: Test ArchUnit License Guardrails
 permissions:
   contents: read
   checks: write
+  issues: write
 
 on:
   push:
